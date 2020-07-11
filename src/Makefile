@@ -509,7 +509,6 @@ install-server-generic: install-common
 	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-csyslogd ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-authd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-dbd ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-makelists ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) verify-agent-conf ${PREFIX}/bin/
 	$(call INSTALL_CMD,0550,root,0) clear_stats ${PREFIX}/bin/
@@ -654,7 +653,6 @@ endif
 BUILD_SERVER+=ossec-analysisd
 BUILD_SERVER+=ossec-logtest
 BUILD_SERVER+=ossec-makelists
-BUILD_SERVER+=ossec-dbd
 
 BUILD_AGENT+=external
 BUILD_AGENT+=ossec-agentd
