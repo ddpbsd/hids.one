@@ -50,6 +50,7 @@ src/syscheck_control
 src/syscheck_update
 src/verify-agent-conf
 src/reportd/ossec-reportd
+src/tls_remoted/tlsremoted
 
 
 # Eclipse files
