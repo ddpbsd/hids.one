@@ -256,85 +256,8 @@ endif # USE_SQLITE
 
 ifneq (,$(filter ${USE_LIBTLS},auto yes y Y 1))
 	DEFINES+=-DUSE_LIBTLS
-	MAILD_CFLAGS+=-ltls
+	MAILD_LDFLAGS+=-ltls
 endif # USE_LIBTLS
-
-MI :=
-PI :=
-ifdef DATABASE
-
-	ifeq (${DATABASE},mysql)
-		DEFINES+=-DMYSQL_DATABASE_ENABLED
-
-		ifdef MYSQL_CFLAGS
-			MI = ${MYSQL_CFLAGS}
-		else
-			MI := $(shell sh -c '${MY_CONFIG} --include 2>/dev/null || echo ')
-
-			ifeq (${MI},) # BEGIN MI manual detection
-				ifneq (,$(wildcard /usr/include/mysql/mysql.h))
-					MI="-I/usr/include/mysql/"
-				else
-					ifneq (,$(wildcard /usr/local/include/mysql/mysql.h))
-						MI="-I/usr/local/include/mysql/"
-					endif  #
-				endif  #MI
-
-			endif
-		endif # MYSQL_CFLAGS
-
-		ifdef MYSQL_LIBS
-			ML = ${MYSQL_LIBS}
-		else
-			ML := $(shell sh -c '${MY_CONFIG} --libs 2>/dev/null || echo ')
-
-			ifeq (${ML},)
-				ifneq (,$(wildcard /usr/lib/mysql/*))
-					ML="-L/usr/lib/mysql -lmysqlclient"
-				else
-					ifneq (,$(wildcard /usr/lib64/mysql/*))
-						ML="-L/usr/lib64/mysql -lmysqlclient"
-					else
-						ifneq (,$(wildcard /usr/local/lib/mysql/*))
-							ML="-L/usr/local/lib/mysql -lmysqlclient"
-						else
-							ifneq (,$(wildcard /usr/local/lib64/mysql/*))
-								ML="-L/usr/local/lib64/mysql -lmysqlclient"
-							endif # local/lib64
-						endif # local/lib
-					endif # lib54
-				endif # lib
-			endif
-		endif # MYSQL_LIBS
-
-		OSSEC_LDFLAGS+=${ML}
-
-	else # DATABASE
-
-		ifeq (${DATABASE}, pgsql)
-			DEFINES+=-DPGSQL_DATABASE_ENABLED
-
-			ifneq (${PGSQL_LIBS},)
-				PL:=${PGSQL_LIBS}
-			else
-				PL:=$(shell sh -c '(${PG_CONFIG} --libdir --pkglibdir 2>/dev/null | sed "s/^/-L/g" | xargs ) || echo ')
-			endif
-
-			ifneq (${PGSQL_CFLAGS},)
-				PI:=${PGSQL_CFLAGS}
-			else
-				PI:=$(shell sh -c '(${PG_CONFIG} --includedir --pkgincludedir 2>/dev/null | sed "s/^/-I/g" | xargs ) || echo ')
-			endif
-
-			# XXX need some basic autodetech stuff here.
-
-			OSSEC_LDFLAGS+=${PL}
-			OSSEC_LDFLAGS+=-lpq
-
-		endif # pgsql
-	endif # mysql
-endif # DATABASE
-
 
 # openssl ###########
 ifeq (${USE_OPENSSL},auto)
@@ -503,7 +426,6 @@ install-server-generic: install-common
 	$(call INSTALL_CMD,0550,root,0) ossec-agentlessd ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-analysisd ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-monitord ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-reportd ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-maild ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-remoted ${PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${PREFIX}/bin
@@ -619,12 +541,6 @@ settings:
 	@echo "    USE_PCRE2_JIT:    ${USE_PCRE2_JIT}"
 	@echo "    USE_LIBTLS:       ${USE_LIBTLS}"
 	@echo "    USE_SYSTEMD:      ${USE_SYSTEMD}"
-	@echo "Mysql settings:"
-	@echo "    includes:         ${MI}"
-	@echo "    libs:             ${ML}"
-	@echo "Pgsql settings:"
-	@echo "    includes:         ${PI}"
-	@echo "    libs:             ${PL}"
 	@echo "Defines:"
 	@echo "    ${DEFINES}"
 	@echo "Compiler:"
@@ -646,7 +562,6 @@ BUILD_SERVER+=manage_agents
 BUILD_SERVER+=utils
 BUILD_SERVER+=ossec-syscheckd
 BUILD_SERVER+=ossec-monitord
-BUILD_SERVER+=ossec-reportd
 ifneq (,$(filter ${USE_OPENSSL},auto yes))
 BUILD_SERVER+=ossec-authd
 endif
@@ -931,19 +846,7 @@ os_maild/%.o: os_maild/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${MAILD_CFLAGS} -DARGV0=\"ossec-maild\" -c $^ -o $@
 
 ossec-maild: ${os_maild_o} ${ossec_libs}
-	${OSSEC_CCBIN} ${OSSEC_CFLAGS} ${MAILD_CFLAGS} $^ ${OSSEC_LDFLAGS} ${DNS_CFLAGS} -levent ${COMPAT_FILES} -o $@
-
-#### os_dbd ##########
-
-os_dbd_c := $(wildcard os_dbd/*.c)
-os_dbd_o := $(os_dbd_c:.c=.o)
-
-os_dbd/%.o: os_dbd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} ${MI} ${PI} -DARGV0=\"ossec-dbd\" -c $^ -o $@
-
-ossec-dbd: ${os_dbd_o} ${ossec_libs}
-	${OSSEC_CCBIN} ${OSSEC_CFLAGS} ${MI} ${PI} ${JSON_INCLUDE} $^ -lm ${OSSEC_LDFLAGS} -o $@
-
+	${OSSEC_CCBIN} ${OSSEC_CFLAGS} ${MAILD_CFLAGS} ${MAILD_LDFLAGS} $^ ${OSSEC_LDFLAGS} ${DNS_CFLAGS} -levent ${COMPAT_FILES} -o $@
 
 #### os_csyslogd #####
 
@@ -1121,18 +1024,6 @@ monitord/%.o: monitord/%.c ${ZLIB_LIB}
 
 ossec-monitord: ${monitor_o} ${ossec_libs} ${ZLIB_LIB} ${JSON_LIB}
 	${OSSEC_CCBIN} ${OSSEC_CFLAGS} ${ZLIB_INCLUDE} $^ ${OSSEC_LDFLAGS} -o $@
-
-
-#### reportd #######
-
-report_c := reportd/report.c
-report_o := $(report_c:.c=.o)
-
-reportd/%.o: reportd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"ossec-reportd\" -c $^ -o $@
-
-ossec-reportd: ${report_o} ${ossec_libs}
-	${OSSEC_CCBIN} ${OSSEC_CFLAGS} $^ ${OSSEC_LDFLAGS} -o $@
 
 
 #### os_auth #######
@@ -1417,12 +1308,10 @@ clean-internals:
 	rm -f ${os_maild_o} ossec-maild
 	rm -f ${crypto_o} os_crypto.a
 	rm -f ${os_csyslogd_o} ossec-csyslogd
-	rm -f ${os_dbd_o} ossec-dbd
 	rm -f ${os_agentlessd_o} ossec-agentlessd
 	rm -f ${os_execd_o} ossec-execd
 	rm -f ${os_logcollector_o} ${os_logcollector_eventchannel_o} ossec-logcollector
 	rm -f ${remoted_o} ossec-remoted
-	rm -f ${report_o} ossec-reportd
 	rm -f ${client_agent_o} ossec-agentd
 	rm -f ${addagent_o} manage_agents
 	rm -f ${util_o} ${util_programs}
