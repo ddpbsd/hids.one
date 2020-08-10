@@ -33,10 +33,6 @@
 #include "dodiff.h"
 #include "output/jsonout.h"
 
-#ifdef PRELUDE_OUTPUT_ENABLED
-#include "output/prelude.h"
-#endif
-
 #ifdef ZEROMQ_OUTPUT_ENABLED
 #include "output/zeromq.h"
 #endif
@@ -273,13 +269,6 @@ int main_analysisd(int argc, char **argv)
         nowDaemon();
         goDaemon();
     }
-
-#ifdef PRELUDE_OUTPUT_ENABLED
-    /* Start prelude */
-    if (Config.prelude) {
-        prelude_start(Config.prelude_profile, argc, argv);
-    }
-#endif
 
 #ifdef ZEROMQ_OUTPUT_ENABLED
     /* Start zeromq */
@@ -947,15 +936,6 @@ void OS_ReadMSG_analysisd(int m_queue)
                         jsonout_output_event(lf);
                     }
                 }
-
-#ifdef PRELUDE_OUTPUT_ENABLED
-                /* Log to prelude */
-                if (Config.prelude) {
-                    if (Config.prelude_log_level <= currently_rule->level) {
-                        OS_PreludeLog(lf);
-                    }
-                }
-#endif
 
 #ifdef ZEROMQ_OUTPUT_ENABLED
                 /* Log to zeromq */
