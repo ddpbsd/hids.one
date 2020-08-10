@@ -68,7 +68,6 @@ MailMsg *OS_RecvMailQ(file_queue *fileq, struct tm *p, MailConfig *mail,
 
 /* Send an email */
 int OS_Sendmail(MailConfig *mail, struct tm *p) __attribute__((nonnull));
-int OS_SendCustomEmail(char **to, char *subject, char *smtpserver, char *from, char *idsname, char *fname, const struct tm *p);
 
 /* Mail timeout used by the file-queue */
 extern unsigned int mail_timeout;
