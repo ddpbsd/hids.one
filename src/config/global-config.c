@@ -124,7 +124,9 @@ int Read_Global(XML_NODE node, void *configp, void *mailp)
     const char *xml_mailmaxperhour = "email_maxperhour";
 
     const char *xml_use_tls = "smtp_use_tls";
+#ifdef USE_LIBTLS
     const char *xml_ca_file = "smtp_ca_file";
+#endif //USE_LIBTLS
 
 #ifdef LIBGEOIP_ENABLED
     const char *xml_geoip_db_path = "geoip_db_path";
