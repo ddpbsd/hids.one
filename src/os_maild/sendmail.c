@@ -9,11 +9,14 @@
 
 /* Basic e-mailing operations */
 
+#include <event.h>
+
 #include "shared.h"
 #include "os_net/os_net.h"
 #include "maild.h"
 #include "mail_list.h"
 #include "os_dns.h"
+
 
 #ifdef USE_LIBTLS
 #include <tls.h>
@@ -53,6 +56,8 @@
 
 int os_sock, istls;
 char tls_msg[1024];
+
+void os_sendmail_cb(int fd, short ev, void *arg);
 
 int OS_Sendmail(MailConfig *mail, struct tm *p)
 {
@@ -126,6 +131,16 @@ merror("XXX os_sendmail() start");
         
 #endif //USE_LIBTLS
 
+        /* setup the libevent stuff */
+        struct event_base *eb;
+        eb = event_init();
+        if (!eb) {
+            ErrorExit("%s: ERROR: event_init() failed.", ARGV0);
+        }
+        struct event ev_accept;
+        event_set(&ev_accept, mail->ibuf.fd, EV_READ, os_sendmail_cb, &mail->ibuf);
+        event_add(&ev_accept, NULL);
+
         ssize_t n;
         int idata = 42;
 merror("XXX os_sendmail() imsg_compose");
@@ -138,50 +153,18 @@ merror("XXX os_sendmail() imsg_compose");
         }
 
         merror("XXX os_sendmail() imsg sent");
-        sleep(1);
-        ssize_t m = 0;
-        int ddplc = 0;
-        if ((m = imsg_read(&mail->ibuf)) == -1 && errno != EAGAIN) {
-            // Loop here until something happens
-            merror("XXX loop loop loop ERROR");
-        }
-merror("XXX os_sendmail() after loop loop loop %zu", m);
 
-        struct imsg imsg;
-        ddplc = 0;
-        for (;;) {
-            m = imsg_get(&mail->ibuf, &imsg);
-            if (m == -1) {
-                merror("XXX imsg_get error");
-            }
-            if (m == 0) {
-                merror("XXX m == 0");
-            }
-
-merror("XXX after imsg_get");
-
-        switch(imsg.hdr.type) {
-            case DNS_RESP:
-                os_sock = imsg.fd;
-                break;
-            case DNS_FAIL:
-                merror("%s: ERROR: DNS failure for smtpserver", ARGV0);
-                return(OS_INVALID);
-                break;;
-            default:
-                merror("%s: ERROR Wrong imsg type. (%u)", ARGV0, imsg.hdr.type);
-                break;
-        }
-        }
-
+        event_dispatch();
 
         if (os_sock <= 0) {
             merror("ossec-maild: ERROR: No socket.");
             return (OS_INVALID);
+        } else {
+            merror("XXX os_sock: %d", os_sock);
         }
 
 merror("XXX os_Sendmail() beginning to send the mail");
-
+socket = os_sock;
         /* Receive the banner */
         msg = OS_RecvTCP(socket, OS_SIZE_1024);
         if ((msg == NULL) || (!OS_Match(VALIDBANNER, msg))) {
@@ -781,4 +764,52 @@ bzero(&tls_msg, 1024);
 
     memset_secure(snd_msg, '\0', 128);
     return (0);
+}
+
+
+void os_sendmail_cb(int fd, short ev, void *arg) {
+    if (fd) { }
+    if (ev) {}
+
+    /* Have to get the *arg stuff */
+    ssize_t n;
+    struct imsg imsg;
+    struct imsgbuf *ibuf = (struct imsgbuf *)arg;
+
+    if ((n = imsg_read(ibuf) == -1 && errno != EAGAIN)) {
+        ErrorExit("%s: ERROR: imsg_read() failed: %s", ARGV0, strerror(errno));
+    }
+    if (n == 0) {
+        debug2("%s: DEBUG: n == 0", ARGV0);
+        //return; //XXX
+    }
+    if (n == EAGAIN) {
+        debug2("%s: DEBUG: n == EAGAIN", ARGV0);
+        return; //XXX
+    }
+
+    if ((n = imsg_get(ibuf, &imsg)) == -1) {
+        merror("%s: ERROR: imsg_get() failed: %s", ARGV0, strerror(errno));
+        return;
+    }
+    if (n == 0) {
+        debug2("%s: DEBUG: n == 0", ARGV0);
+        return;
+    }
+
+    switch(imsg.hdr.type) {
+        case DNS_RESP:
+            os_sock = imsg.fd;
+            break;
+        case DNS_FAIL:
+            merror("%s: ERROR: DNS failure for smtpserver", ARGV0);
+            break;;
+        default:
+            merror("%s: ERROR Wrong imsg type.", ARGV0);
+            break;
+    }
+
+
+
+    return;
 }
