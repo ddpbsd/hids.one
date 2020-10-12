@@ -7,6 +7,9 @@
  * Foundation
  */
 
+#include <event.h>
+
+#include "os_dns.h"
 #include "shared.h"
 #include "agentd.h"
 #include "os_net/os_net.h"
