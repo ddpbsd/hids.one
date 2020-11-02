@@ -85,3 +85,8 @@ src/win32/help_win.txt
 src/win32/internal_options.conf
 src/win32/restart-ossec.cmd
 src/win32/route-null.cmd
+
+#os_dbd specific files
+src/os_dbd/Makefile.inc
+src/os_dbd/Makefile.inc.backup
+src/os_dbd/ossec-dbd

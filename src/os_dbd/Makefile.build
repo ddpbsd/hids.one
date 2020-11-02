@@ -3,13 +3,18 @@ include Makefile.inc
 CC?=cc
 
 all:
-	make -f Makefile.build os../shared
+	make -f Makefile.build osshared
 	make -f Makefile.build osxml
 	make -f Makefile.build osconfig
 	make -f Makefile.build osregex
+	make -f Makefile.build osnet
 	make -f Makefile.build osmain
 
-os../shared:
+osnet:
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -I../ -I../shared -o ../os_net/os_net.o -c ../os_net/os_net.c ../shared/debug_op.o ../shared/file_op.o ../shared/help.o
+
+
+osshared:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/debug_op.o -c ../shared/debug_op.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/file-queue.o -c ../shared/file-queue.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/file_op.o -c ../shared/file_op.c
@@ -22,6 +27,8 @@ os../shared:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/read-alert.o -c ../shared/read-alert.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/list_op.o -c ../shared/list_op.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/rules_op.o -c ../shared/rules_op.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/regex_op.o -c ../shared/regex_op.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../shared/help.o -c ../shared/help.c
 
 osxml:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) -o ../os_xml/os_xml.o -c ../os_xml/os_xml.c
@@ -33,6 +40,18 @@ osxml:
 osconfig:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/dbd-config.o -c ../config/dbd-config.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../config/config.o -c ../config/config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/global-config.o -c ../config/global-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/email-alerts-config.o -c ../config/email-alerts-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/localfile-config.o -c ../config/localfile-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/remote-config.o -c ../config/remote-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/alerts-config.o -c ../config/alerts-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/syscheck-config.o -c ../config/syscheck-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/rootcheck-config.o -c ../config/rootcheck-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/csyslogd-config.o -c ../config/csyslogd-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/agentlessd-config.o -c ../config/agentlessd-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/rules-config.o -c ../config/rules-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/client-config.o -c ../config/client-config.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(DBD_DEFINES) $(DBD_INCLUDES_EXTRA) $(PCRE2_INCLUDES) -o ../config/active-response.o -c ../config/active-response.c
 
 osregex:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../os_regex/os_converter.o -c ../os_regex/os_converter.c
@@ -57,7 +76,7 @@ osregex:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) -o ../os_regex/os_regex_strbreak.o -c ../os_regex/os_regex_strbreak.c
 
 osmain:
-	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) $(DBD_DEFINES) $(DBD_LIB) $(PCRE2_LIB) -DARGV0=\"ossec-dbd\" -o ossec-dbd alert.c config.c db_op.c dbd.c main.c rules.c server.c ../shared/*.o ../config/*.o ../os_xml/*.o ../os_regex/*.o $(LIB_END)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(DBD_INCLUDES) $(PCRE2_INCLUDES) $(DBD_DEFINES) $(DBD_LIB) $(PCRE2_LIB) -DARGV0=\"ossec-dbd\" -o ossec-dbd alert.c config.c db_op.c dbd.c main.c rules.c server.c dbd_help.c ../shared/*.o ../config/*.o ../os_xml/*.o ../os_regex/*.o ../os_net/*.o $(LIB_END)
 
 clean:
 	rm -f ../shared/*.o ./*.o config/*.o ../os_regex/*.o ../os_xml/*.o Makefile.inc Makefile.inc.backup
