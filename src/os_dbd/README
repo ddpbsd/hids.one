@@ -1,3 +1,14 @@
+# Build
+
+## Postgresql
+
+make postgresql
+
+## MySQL
+
+make mysql
+
+
 # Simple readme with some query examples.
 # Examples for MySQL and PostgreSQL
 
