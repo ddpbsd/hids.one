@@ -5,6 +5,7 @@
 .DS_Store
 *.dll
 *.exe
+*.tmp
 
 # Auto generated build files
 src/LOCATION
