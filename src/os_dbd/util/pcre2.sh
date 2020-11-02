@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Add pcre stuff to the make include file
+
 if [ -e Makefile.inc ]; then
     mv Makefile.inc Makefile.inc.backup
 fi

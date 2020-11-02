@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Create a makefile include file with some information for
+# building with pg support
+
 INC=$(pg_config --includedir)
 LIB=$(pg_config --libdir)
 

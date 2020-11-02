@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Create a makefile include file for building with mysql support
+
 INC=$(mysql_config --include)
 LIB=$(mysql_config --libs)
 
