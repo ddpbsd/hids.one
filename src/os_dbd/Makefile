@@ -10,5 +10,5 @@ mysql:
 	make -f Makefile.build
 
 clean:
-	rm -f shared/*.o ./*.o config/*.o os_regex/*.o os_xml/*.o Makefile.inc Makefile.inc.backup
+	rm -f shared/*.o ./*.o config/*.o os_regex/*.o os_xml/*.o Makefile.inc Makefile.inc.backup ossec-dbd
 
