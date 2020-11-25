@@ -1,5 +1,5 @@
 scan-build:
-	mkdir SCAN
+	mkdir -p SCAN
 	scan-build -o SCAN make postgresql
 
 postgresql:
