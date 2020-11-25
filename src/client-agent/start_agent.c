@@ -8,7 +8,6 @@
  */
 
 
-#include "os_dns.h"
 #ifndef WIN32
 #include <event.h>
 #endif
@@ -17,7 +16,7 @@
 #include "agentd.h"
 
 #ifndef WIN32
-#include "os_dns/os_dns.h"
+#include "os_dns.h"
 #include "os_net/os_net.h"
 #endif
 
