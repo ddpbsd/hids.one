@@ -625,6 +625,7 @@ char *OS_GetHost(const char *host, unsigned int attempts)
 
     while (i <= attempts) {
         if ((error = getaddrinfo(host, NULL, NULL, &result)) != 0) {
+            merror("XXX getaddrinfo() failed: %s", gai_strerror(error));
             sleep(i++);
             continue;
         }
