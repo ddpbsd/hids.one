@@ -1,3 +1,5 @@
+scan-build:
+	scan-build make postgresql
 
 postgresql:
 	/bin/sh ./util/pcre2.sh
