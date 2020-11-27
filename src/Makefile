@@ -23,8 +23,8 @@ OSSEC_USER_REM?=ossecr
 
 ## Locations
 SYS_PREFIX?=/usr/local
-SBIN_DIR?=${SYS_PREFIX}/sbin
-BIN_DIR?=${SYS_PREFIX}/bin
+OSSEC_SBINDIR?=${SYS_PREFIX}/sbin
+OSSEC_BINDIR?=${SYS_PREFIX}/bin
 CONF_DIR?=${OSSEC_PREFIX}/etc
 
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
@@ -429,23 +429,23 @@ install-server-generic: install-common
 	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs/alerts
 	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs/firewall
 
-	$(call INSTALL_CMD,0550,root,0) ossec-agentlessd ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-analysisd ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-monitord ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-maild ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-remoted ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-csyslogd ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-authd ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-makelists ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) verify-agent-conf ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) clear_stats ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) list_agents ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) ossec-regex ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) syscheck_update ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) agent_control ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) syscheck_control ${OSSEC_PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) rootcheck_control ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) ossec-agentlessd ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-analysisd ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-monitord ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-maild ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-remoted ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-csyslogd ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-authd ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-makelists ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) verify-agent-conf ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) clear_stats ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) list_agents ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-regex ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) syscheck_update ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) agent_control ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) syscheck_control ${OSSEC_BINDIR}
+	$(call INSTALL_CMD,0550,root,0) rootcheck_control ${OSSEC_BINDIR}
 
 	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/stats
 	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/rules
