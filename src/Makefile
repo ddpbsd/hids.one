@@ -12,7 +12,7 @@ LUA_ENABLE?=no
 MAXAGENTS?=2048
 REUSE_ID?=no
 # XXX Becareful NO EXTRA Spaces here
-PREFIX?=/var/ossec
+OSSEC_PREFIX?=/var/ossec
 PG_CONFIG?=pg_config
 MY_CONFIG?=mysql_config
 PRELUDE_CONFIG?=libprelude-config
@@ -20,6 +20,12 @@ OSSEC_GROUP?=ossec
 OSSEC_USER?=ossec
 OSSEC_USER_MAIL?=ossecm
 OSSEC_USER_REM?=ossecr
+
+## Locations
+SYS_PREFIX?=/usr/local
+SBIN_DIR?=${SYS_PREFIX}/sbin
+BIN_DIR?=${SYS_PREFIX}/bin
+CONF_DIR?=${OSSEC_PREFIX}/etc
 
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
@@ -45,7 +51,7 @@ export MYLDFLAGS= "${LDFLAGS}"
 export MYCFLAGS= "${CFLAGS}"
 
 DEFINES=-DMAX_AGENTS=${MAXAGENTS} -DOSSECHIDS
-DEFINES+=-DDEFAULTDIR=\"${PREFIX}\"
+DEFINES+=-DDEFAULTDIR=\"${OSSEC_PREFIX}\"
 DEFINES+=-DUSER=\"${OSSEC_USER}\"
 DEFINES+=-DREMUSER=\"${OSSEC_USER_REM}\"
 DEFINES+=-DGROUPGLOBAL=\"${OSSEC_GROUP}\"
@@ -325,10 +331,10 @@ endif
 install: install-${TARGET}
 
 install-agent: install-common
-	$(call INSTALL_CMD,0550,root,0) ossec-agentd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) agent-auth ${PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-agentd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) agent-auth ${OSSEC_PREFIX}/bin
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/rids
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/rids
 
 install-local: install-server-generic
 
@@ -337,133 +343,133 @@ install-hybrid: install-server-generic
 install-server: install-server-generic
 
 install-common: build
-	./init/adduser.sh ${OSSEC_USER} ${OSSEC_USER_MAIL} ${OSSEC_USER_REM} ${OSSEC_GROUP} ${PREFIX}
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/logs
-	$(call INSTALL_CMD,0660,${OSSEC_USER},${OSSEC_GROUP}) /dev/null ${PREFIX}/logs/ossec.log
+	./init/adduser.sh ${OSSEC_USER} ${OSSEC_USER_MAIL} ${OSSEC_USER_REM} ${OSSEC_GROUP} ${OSSEC_PREFIX}
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs
+	$(call INSTALL_CMD,0660,${OSSEC_USER},${OSSEC_GROUP}) /dev/null ${OSSEC_PREFIX}/logs/ossec.log
 
-	$(call INSTALL_CMD,0550,root,0) -d ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-logcollector ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-syscheckd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-execd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) manage_agents ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ../contrib/util.sh ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) ${OSSEC_CONTROL_SRC} ${PREFIX}/bin/ossec-control
+	$(call INSTALL_CMD,0550,root,0) -d ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-logcollector ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-syscheckd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-execd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) manage_agents ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ../contrib/util.sh ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) ${OSSEC_CONTROL_SRC} ${OSSEC_PREFIX}/bin/ossec-control
 
 ifeq (${LUA_ENABLE},yes)
-	$(call INSTALL_CMD,0550,root,0) -d ${PREFIX}/lua
-	$(call INSTALL_CMD,0550,root,0) -d ${PREFIX}/lua/native
-	$(call INSTALL_CMD,0550,root,0) -d ${PREFIX}/lua/compiled
-	$(call INSTALL_CMD,0550,root,0) ${EXTERNAL_LUA}src/ossec-lua ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) ${EXTERNAL_LUA}src/ossec-luac ${PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) -d ${OSSEC_PREFIX}/lua
+	$(call INSTALL_CMD,0550,root,0) -d ${OSSEC_PREFIX}/lua/native
+	$(call INSTALL_CMD,0550,root,0) -d ${OSSEC_PREFIX}/lua/compiled
+	$(call INSTALL_CMD,0550,root,0) ${EXTERNAL_LUA}src/ossec-lua ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) ${EXTERNAL_LUA}src/ossec-luac ${OSSEC_PREFIX}/bin/
 endif
 
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/queue
-	$(call INSTALL_CMD,0770,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/alerts
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/ossec
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/syscheck
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/diff
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue
+	$(call INSTALL_CMD,0770,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/alerts
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/ossec
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/syscheck
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/diff
 
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/etc
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/etc
 ifeq (${INSTALL_LOCALTIME},yes)
-	$(call INSTALL_CMD,0440,root,${OSSEC_GROUP}) /etc/localtime ${PREFIX}/etc
+	$(call INSTALL_CMD,0440,root,${OSSEC_GROUP}) /etc/localtime ${OSSEC_PREFIX}/etc
 endif
 ifeq (${INSTALL_RESOLVCONF},yes)
-	$(call INSTALL_CMD,0440,root,${OSSEC_GROUP}) /etc/resolv.conf ${PREFIX}/etc
+	$(call INSTALL_CMD,0440,root,${OSSEC_GROUP}) /etc/resolv.conf ${OSSEC_PREFIX}/etc
 endif
 
-	$(call INSTALL_CMD,1550,root,${OSSEC_GROUP}) -d ${PREFIX}/tmp
+	$(call INSTALL_CMD,1550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/tmp
 
 ifneq (,$(wildcard /etc/TIMEZONE))
-	$(call INSTALL_CMD,440,root,${OSSEC_GROUP}) /etc/TIMEZONE ${PREFIX}/etc/
+	$(call INSTALL_CMD,440,root,${OSSEC_GROUP}) /etc/TIMEZONE ${OSSEC_PREFIX}/etc/
 endif
 # Solaris Needs some extra files
 ifeq (${uname_S},SunOS)
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/usr/share/lib/zoneinfo/
-	cp -r /usr/share/lib/zoneinfo/* ${PREFIX}/usr/share/lib/zoneinfo/
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/usr/share/lib/zoneinfo/
+	cp -r /usr/share/lib/zoneinfo/* ${OSSEC_PREFIX}/usr/share/lib/zoneinfo/
 endif
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/internal_options.conf ${PREFIX}/etc/
-ifeq (,$(wildcard ${PREFIX}/etc/local_internal_options.conf))
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/local_internal_options.conf ${PREFIX}/etc/local_internal_options.conf
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/internal_options.conf ${OSSEC_PREFIX}/etc/
+ifeq (,$(wildcard ${OSSEC_PREFIX}/etc/local_internal_options.conf))
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/local_internal_options.conf ${OSSEC_PREFIX}/etc/local_internal_options.conf
 endif
-ifeq (,$(wildcard ${PREFIX}/etc/client.keys))
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) /dev/null ${PREFIX}/etc/client.keys
+ifeq (,$(wildcard ${OSSEC_PREFIX}/etc/client.keys))
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) /dev/null ${OSSEC_PREFIX}/etc/client.keys
 endif
-ifeq (,$(wildcard ${PREFIX}/etc/ossec.conf))
+ifeq (,$(wildcard ${OSSEC_PREFIX}/etc/ossec.conf))
 ifneq (,$(wildcard ../etc/ossec.mc))
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/ossec.mc ${PREFIX}/etc/ossec.conf
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/ossec.mc ${OSSEC_PREFIX}/etc/ossec.conf
 else
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ${OSSEC_CONF_SRC} ${PREFIX}/etc/ossec.conf
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ${OSSEC_CONF_SRC} ${OSSEC_PREFIX}/etc/ossec.conf
 endif
 endif
 
-	$(call INSTALL_CMD,0770,root,${OSSEC_GROUP}) -d ${PREFIX}/etc/shared
-	$(call INSTALL_CMD,0640,${OSSEC_USER},${OSSEC_GROUP}) rootcheck/db/*.txt ${PREFIX}/etc/shared/
+	$(call INSTALL_CMD,0770,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/etc/shared
+	$(call INSTALL_CMD,0640,${OSSEC_USER},${OSSEC_GROUP}) rootcheck/db/*.txt ${OSSEC_PREFIX}/etc/shared/
 
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/active-response
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/active-response/bin
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/agentless
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) agentlessd/scripts/* ${PREFIX}/agentless/
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/active-response
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/active-response/bin
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/agentless
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) agentlessd/scripts/* ${OSSEC_PREFIX}/agentless/
 
-	$(call INSTALL_CMD,0700,root,${OSSEC_GROUP}) -d ${PREFIX}/.ssh
+	$(call INSTALL_CMD,0700,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/.ssh
 
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) ../active-response/*.sh ${PREFIX}/active-response/bin/
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) ../active-response/firewalls/*.sh ${PREFIX}/active-response/bin/
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) ../active-response/*.sh ${OSSEC_PREFIX}/active-response/bin/
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) ../active-response/firewalls/*.sh ${OSSEC_PREFIX}/active-response/bin/
 
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/var
-	$(call INSTALL_CMD,0770,root,${OSSEC_GROUP}) -d ${PREFIX}/var/run
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/var
+	$(call INSTALL_CMD,0770,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/var/run
 
 	./init/fw-check.sh execute
 
 
 
 install-server-generic: install-common
-	$(call INSTALL_CMD,0660,${OSSEC_USER},${OSSEC_GROUP}) /dev/null ${PREFIX}/logs/active-responses.log
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/logs/archives
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/logs/alerts
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/logs/firewall
+	$(call INSTALL_CMD,0660,${OSSEC_USER},${OSSEC_GROUP}) /dev/null ${OSSEC_PREFIX}/logs/active-responses.log
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs/archives
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs/alerts
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/logs/firewall
 
-	$(call INSTALL_CMD,0550,root,0) ossec-agentlessd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-analysisd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-monitord ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-maild ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-remoted ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-csyslogd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-authd ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-makelists ${PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) verify-agent-conf ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) clear_stats ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) list_agents ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) ossec-regex ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) syscheck_update ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) agent_control ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) syscheck_control ${PREFIX}/bin/
-	$(call INSTALL_CMD,0550,root,0) rootcheck_control ${PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) ossec-agentlessd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-analysisd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-monitord ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-maild ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-remoted ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-logtest ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-csyslogd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-authd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-makelists ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) verify-agent-conf ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) clear_stats ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) list_agents ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) ossec-regex ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) syscheck_update ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) agent_control ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) syscheck_control ${OSSEC_PREFIX}/bin/
+	$(call INSTALL_CMD,0550,root,0) rootcheck_control ${OSSEC_PREFIX}/bin/
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/stats
-	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${PREFIX}/rules
-ifneq (,$(wildcard ${PREFIX}/rules/local_rules.xml))
-	cp ${PREFIX}/rules/local_rules.xml ${PREFIX}/rules/local_rules.xml.installbackup
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/rules/*.xml ${PREFIX}/rules
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ${PREFIX}/rules/local_rules.xml.installbackup ${PREFIX}/rules/local_rules.xml
-	rm ${PREFIX}/rules/local_rules.xml.installbackup
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/stats
+	$(call INSTALL_CMD,0550,root,${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/rules
+ifneq (,$(wildcard ${OSSEC_PREFIX}/rules/local_rules.xml))
+	cp ${OSSEC_PREFIX}/rules/local_rules.xml ${OSSEC_PREFIX}/rules/local_rules.xml.installbackup
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/rules/*.xml ${OSSEC_PREFIX}/rules
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ${OSSEC_PREFIX}/rules/local_rules.xml.installbackup ${OSSEC_PREFIX}/rules/local_rules.xml
+	rm ${OSSEC_PREFIX}/rules/local_rules.xml.installbackup
 else
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/rules/*.xml ${PREFIX}/rules
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) -b ../etc/rules/*.xml ${OSSEC_PREFIX}/rules
 endif
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/fts
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/fts
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/rootcheck
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/rootcheck
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER_REM},${OSSEC_GROUP}) -d ${PREFIX}/queue/agent-info
-	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${PREFIX}/queue/agentless
+	$(call INSTALL_CMD,0750,${OSSEC_USER_REM},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/agent-info
+	$(call INSTALL_CMD,0750,${OSSEC_USER},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/agentless
 
-	$(call INSTALL_CMD,0750,${OSSEC_USER_REM},${OSSEC_GROUP}) -d ${PREFIX}/queue/rids
+	$(call INSTALL_CMD,0750,${OSSEC_USER_REM},${OSSEC_GROUP}) -d ${OSSEC_PREFIX}/queue/rids
 
-	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/decoder.xml ${PREFIX}/etc/
+	$(call INSTALL_CMD,0640,root,${OSSEC_GROUP}) ../etc/decoder.xml ${OSSEC_PREFIX}/etc/
 
-	rm -f ${PREFIX}/etc/shared/merged.mg
+	rm -f ${OSSEC_PREFIX}/etc/shared/merged.mg
 
 
 .PHONY: failtarget
@@ -481,7 +487,7 @@ help: failtarget
 	@echo "General options: "
 	@echo "   make V=1              Display full compiler messages"
 	@echo "   make DEBUG=1          Build with symbols and without optimization"
-	@echo "   make PREFIX=/path     Install OSSEC to '/path'. Defaults to /var/ossec"
+	@echo "   make OSSEC_PREFIX=/path     Install OSSEC to '/path'. Defaults to /var/ossec"
 	@echo "   make MAXAGENTS=NUMBER Set the number of maximum agents to NUMBER. Defaults to 2048"
 	@echo "   make REUSE_ID=yes     Enables agent ID re-use"
 	@echo
@@ -510,7 +516,7 @@ settings:
 	@echo "    V:                ${V}"
 	@echo "    DEBUG:            ${DEBUG}"
 	@echo "    DEBUGAD:          ${DEBUGAD}"
-	@echo "    PREFIX:           ${PREFIX}"
+	@echo "    OSSEC_PREFIX:           ${OSSEC_PREFIX}"
 	@echo "    MAXAGENTS:        ${MAXAGENTS}"
 	@echo "    REUSE_ID:         ${REUSE_ID}"
 	@echo "    DATABASE:         ${DATABASE}"
@@ -640,7 +646,7 @@ endif
 
 ${EXTERNAL_ZLIB}libz.a:
 ifeq (${TARGET},winagent)
-	cd ${EXTERNAL_ZLIB} && cp zconf.h.in zconf.h && ${MAKE} -f win32/Makefile.gcc PREFIX=${MING_BASE} libz.a
+	cd ${EXTERNAL_ZLIB} && cp zconf.h.in zconf.h && ${MAKE} -f win32/Makefile.gcc OSSEC_PREFIX=${MING_BASE} libz.a
 else
 ifeq (${ZLIB_SYSTEM},no)
 	cd ${EXTERNAL_ZLIB} && ./configure && ${MAKE} libz.a
