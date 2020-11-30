@@ -8,6 +8,7 @@ LOCAL=`dirname $0`;
 cd ${LOCAL}
 PWD=`pwd`
 DIR=`dirname $PWD`;
+SBIN_DIR='/usr/local/sbin'
 PLIST=${DIR}/bin/.process_list;
 
 ###  Do not modify below here ###
@@ -180,7 +181,7 @@ start()
     SDAEMONS="${DB_DAEMON} ${CSYSLOG_DAEMON} ${AGENTLESS_DAEMON} ossec-maild ossec-execd ossec-analysisd ossec-logcollector ossec-syscheckd ossec-monitord"
 
     echo "Starting $NAME $VERSION..."
-    echo | ${DIR}/bin/ossec-logtest > /dev/null 2>&1;
+    echo | ${SBIN_DIR}/ossec-logtest > /dev/null 2>&1;
     if [ ! $? = 0 ]; then
         echo "ossec-analysisd: Configuration error. Exiting."
         exit 1;
@@ -193,7 +194,7 @@ start()
     for i in ${SDAEMONS}; do
         pstatus ${i};
         if [ $? = 0 ]; then
-            ${DIR}/bin/${i} ${DEBUG_CLI};
+            ${SBIN_DIR}/${i} ${DEBUG_CLI};
             if [ $? != 0 ]; then
                 echo "${i} did not start correctly.";
                 unlock;
