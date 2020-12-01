@@ -349,9 +349,9 @@ install-common: build
 	$(call INSTALL_CMD,0660,${OSSEC_USER},${OSSEC_GROUP}) /dev/null ${OSSEC_PREFIX}/logs/ossec.log
 
 	$(call INSTALL_CMD,0550,root,0) -d ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-logcollector ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-syscheckd ${OSSEC_PREFIX}/bin
-	$(call INSTALL_CMD,0550,root,0) ossec-execd ${OSSEC_PREFIX}/bin
+	$(call INSTALL_CMD,0550,root,0) ossec-logcollector ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-syscheckd ${OSSEC_SBINDIR}
+	$(call INSTALL_CMD,0550,root,0) ossec-execd ${OSSEC_SBINDIR}
 	$(call INSTALL_CMD,0550,root,0) manage_agents ${OSSEC_PREFIX}/bin
 	$(call INSTALL_CMD,0550,root,0) ../contrib/util.sh ${OSSEC_PREFIX}/bin/
 	$(call INSTALL_CMD,0550,root,0) ${OSSEC_CONTROL_SRC} ${OSSEC_PREFIX}/bin/ossec-control
