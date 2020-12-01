@@ -37,6 +37,7 @@ USE_GEOIP?=no
 USE_INOTIFY=no
 USE_PCRE2_JIT=yes
 USE_SYSTEMD?=yes
+USE_LIBSODIUM?=no
 
 ifneq (${TARGET},winagent)
 	USE_OPENSSL?=auto
@@ -264,6 +265,11 @@ ifneq (,$(filter ${USE_LIBTLS},auto yes y Y 1))
 	DEFINES+=-DUSE_LIBTLS
 	MAILD_LDFLAGS+=-ltls
 endif # USE_LIBTLS
+
+ifneq (,$(filter ${USE_LIBSODIUM},auto yes y Y 1))
+	DEFINES+=-DLIBSODIUM_ENABLED
+	OSSEC_LDFLAGS+=-lsodium
+endif # libsodium
 
 # openssl ###########
 ifeq (${USE_OPENSSL},auto)
