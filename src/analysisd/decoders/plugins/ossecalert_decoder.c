@@ -44,8 +44,8 @@ void *OSSECAlert_Decoder_Exec(Eventinfo *lf)
     char oa_newlocation[256];
     char agent_file[OS_SIZE_1024 +1];
     char tmpstr_buffer[4096 +1];
-    char *tmpstr_hostname;
-    char *tmpstr_programname;
+    char *tmpstr_hostname = NULL;
+    char *tmpstr_programname = NULL;
     char *tmp_str = NULL;
     void *rule_pointer;
     FILE *fp;
@@ -182,8 +182,8 @@ void *OSSECAlert_Decoder_Exec(Eventinfo *lf)
     tmpstr_buffer[0] = '\0';
     tmpstr_buffer[4095] = '\0';
     strncpy(tmpstr_buffer, tmp_str, 4094);
-    strncpy(&tmpstr_hostname, lf->hostname, 4096);
-    strncpy(&tmpstr_programname, lf->program_name, 4096);
+    strncpy(tmpstr_hostname, lf->hostname, 4096);
+    strncpy(tmpstr_programname, lf->program_name, 4096);
 
     free(lf->full_log);
     lf->full_log = NULL;
