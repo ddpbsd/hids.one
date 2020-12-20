@@ -79,12 +79,10 @@ void OS_Run2(MailConfig *mail) {
         else if (((mailtosend < mail->maxperhour) && (mailtosend != 0)) ||
                  ((p->tm_hour != thishour) && (childcount < MAXCHILDPROCESS))) {
             MailNode *mailmsg;
-            pid_t pid;
 
             /* Check if we have anything to send */
             mailmsg = OS_CheckLastMail();
             if (mailmsg == NULL) {
-                /* Don't fork in here */
                 goto snd_check_hour;
             }
 
