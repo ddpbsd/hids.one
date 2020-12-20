@@ -106,6 +106,7 @@ ifeq (${uname_S},NetBSD)
 		LUA_PLAT=posix
 		CFLAGS+=-I/usr/local/include
 		OSSEC_LDFLAGS+=-L/usr/local/lib
+		USE_PCRE2_JIT=n
 else
 ifeq (${uname_S},OpenBSD)
 #		DEFINES+=-DOpenBSD
