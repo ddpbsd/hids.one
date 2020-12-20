@@ -20,6 +20,7 @@ OSSEC_GROUP?=ossec
 OSSEC_USER?=ossec
 OSSEC_USER_MAIL?=ossecm
 OSSEC_USER_REM?=ossecr
+DEBUG=y
 
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
@@ -148,7 +149,8 @@ OSSEC_CFLAGS=${CFLAGS}
 #ANALYSISD_FLAGS="-lsqlite3"
 
 ifdef DEBUG
-	OSSEC_CFLAGS+=-g
+	OSSEC_CFLAGS+=-ggdb
+	OSSEC_CFLAGS+=-Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wshadow -Wpointer-arith -Wcast-qual -Wsign-compare
 endif #DEBUG
 
 ifneq (,$(filter ${CLEANFULL},yes y Y 1))
