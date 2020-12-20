@@ -147,7 +147,7 @@ static void clean_exit(SSL_CTX *ctx, int sock)
 }
 
 /* Exit handler */
-static void cleanup();
+static void cleanup(void);
 
 
 
