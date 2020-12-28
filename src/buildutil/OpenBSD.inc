@@ -3,6 +3,8 @@ DEFINES+=-pthread
 DNS_CFLAGS+=-util
 LUA_PLAT=posix
 CFLAGS+=-I/usr/local/include
+CFLAGS+=-ggdb
+CFLAGS+=-O2
 OSSEC_LDFLAGS+=-L/usr/local/lib
 USE_PCRE2_JIT=n
 
