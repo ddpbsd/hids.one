@@ -91,3 +91,7 @@ src/win32/route-null.cmd
 src/os_dbd/Makefile.inc
 src/os_dbd/Makefile.inc.backup
 src/os_dbd/ossec-dbd
+
+#Build util stuff
+src/buildutil/Makefile.inc*
+
