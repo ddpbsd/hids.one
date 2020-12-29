@@ -1,10 +1,10 @@
 DEFINES+=-DOpenBSD
 DEFINES+=-pthread
-DNS_CFLAGS+=-util
+DNS_OSSEC_CFLAGS+=-util
 LUA_PLAT=posix
-CFLAGS+=-I/usr/local/include
-CFLAGS+=-ggdb
-CFLAGS+=-O2
+OSSEC_CFLAGS=-I/usr/local/include
+OSSEC_CFLAGS+=-ggdb
+OSSEC_CFLAGS+=-O2
 OSSEC_LDFLAGS+=-L/usr/local/lib
 USE_PCRE2_JIT=n
 
@@ -16,7 +16,7 @@ ZLIB_SYSTEM?=yes
 PCRE2_SYSTEM?=yes
 LUA_PLAT=posix
 LUA_ENABLE?=no
-DEBUG=y
+H1_DEBUG?=yes
 
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
