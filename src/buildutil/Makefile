@@ -110,7 +110,7 @@ shared:
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/wait_op.o ../shared/wait_op.c
 
 osnet:
-	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../shared -o ../os_net/os_net.o -c ../os_net/os_net.c ../shared/debug.op.o ../shared/file_op.o ../shared/help.o
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_net/os_net.o ../os_net/os_net.c
 
 osxml:
 	echo "TEST"
