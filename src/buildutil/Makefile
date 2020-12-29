@@ -19,7 +19,7 @@ OSSEC_GROUP?=ossec
 OSSEC_USER?=ossec
 OSSEC_USER_MAIL?=ossecm
 OSSEC_USER_REM?=ossecr
-DEBUG?=y
+H1_DEBUG?=yes
 
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
@@ -32,6 +32,11 @@ USE_INOTIFY?=no
 USE_PCRE2_JIT?=yes
 USE_SYSTEMD?=yes
 USE_SQLITE?=yes
+
+CC?=cc
+MAKE?=make
+
+CFLAGS+=${OSSEC_CFLAGS}
 
 all:
 	@echo "TEST"
@@ -71,7 +76,51 @@ settings:
 	@echo "Defines:"
 	@echo "    ${DEFINES}"
 	@echo "Compiler:"
-	@echo "    CFLAGS	  ${OSSEC_CFLAGS}"
+	@echo "    OSSEC_CFLAGS	  ${OSSEC_CFLAGS}"
+	@echo "    CFLAGS	  ${CFLAGS}"
 	@echo "    LDFLAGS	 ${OSSEC_LDFLAGS}"
 	@echo "    CC	      ${CC}"
 	@echo "    MAKE	    ${MAKE}"
+
+shared:
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/agent_op.o ../shared/agent_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/custom_output_search_replace.o ../shared/custom_output_search_replace.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/debug_op.o ../shared/debug_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/dirtree_op.o ../shared/dirtree_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/file-queue.o ../shared/file-queue.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/file_op.o ../shared/file_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/fs_op.o ../shared/fs_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/hash_op.o ../shared/hash_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/help.o ../shared/help.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/list_op.o ../shared/list_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/math_op.o ../shared/math_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/mem_op.o ../shared/mem_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/mq_op.o ../shared/mq_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/privsep_op.o ../shared/privsep_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/pthreads_op.o ../shared/pthreads_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/randombytes.o ../shared/randombytes.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/read-agents.o ../shared/read-agents.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/read-alert.o ../shared/read-alert.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/regex_op.o ../shared/regex_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/rules_op.o ../shared/rules_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/sig_op.o ../shared/sig_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/store_op.o ../shared/store_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/string_op.o ../shared/string_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/validate_op.o ../shared/validate_op.c
+	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/wait_op.o ../shared/wait_op.c
+
+osnet:
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../shared -o ../os_net/os_net.o -c ../os_net/os_net.c ../shared/debug.op.o ../shared/file_op.o ../shared/help.o
+
+osxml:
+	echo "TEST"
+
+osconfig:
+	echo "TEST"
+
+osregex:
+	echo "TEST"
+
+analysisd:
+	echo "TEST"
+
