@@ -124,3 +124,5 @@ osregex:
 analysisd:
 	echo "TEST"
 
+clean:
+	rm -f Makefile.inc ../shared/*.o ../os_net/*.o ../os_config/*.o ../os_xml/*.o ../os_regex/*.o ../analysisd/*.o
