@@ -141,7 +141,6 @@ merror("XXX os_sendmail() start");
         event_set(&ev_accept, mail->ibuf.fd, EV_READ, os_sendmail_cb, &mail->ibuf);
         event_add(&ev_accept, NULL);
 
-        ssize_t n;
         int idata = 42;
 merror("XXX os_sendmail() imsg_compose");
 
