@@ -86,7 +86,7 @@ static int hourly_syscheck;
 static int hourly_firewall;
 
 #ifdef LIBGEOIP_ENABLED
-    MMDB_s geoipdb;
+    extern MMDB_s geoipdb;
 #endif
 
 

@@ -23,10 +23,12 @@
 #include "decoder.h"
 #include <maxminddb.h>
 
+//extern MMDB_s geoipdb;
 
 char *GetGeoInfobyIP(char *ip_addr)
 {
 
+    extern MMDB_s geoipdb;
     //debug1("%s: DEBUG: Entered GetGeoInfobyIP", __local_name);
 
     if(!ip_addr)
