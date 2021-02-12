@@ -113,10 +113,14 @@ osnet:
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_net/os_net.o ../os_net/os_net.c
 
 osxml:
-	echo "TEST"
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml.o ../os_xml/os_xml.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_access.o ../os_xml/os_xml_access.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_node_access.o ../os_xml/os_xml_node_access.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_variables.o ../os_xml/os_xml_variables.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_writer.o ../os_xml/os_xml_writer.c
 
 osconfig:
-	echo "TEST"
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../config/active-response.o ../config/active-response.c
 
 osregex:
 	echo "TEST"
