@@ -189,4 +189,14 @@ int OS_StrIsNum(const char *str);
 extern const unsigned char hostname_map[256];
 #define isValidChar(x) (hostname_map[(unsigned char)x])
 
+int OSMatch_Execute_pcre2_match(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_true(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strncmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strrcmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strcmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strncasecmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strrcasecmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_Execute_strcasecmp(const char *subject, size_t len, OSMatch *match);
+int OSMatch_CouldBeOptimized(const char *pattern2check);
+
 #endif /* __OS_REGEX_H */

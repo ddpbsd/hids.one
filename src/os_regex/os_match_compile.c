@@ -13,6 +13,7 @@
 
 #include "os_regex.h"
 
+/*
 int OSMatch_Execute_pcre2_match(const char *subject, size_t len, OSMatch *match);
 int OSMatch_Execute_true(const char *subject, size_t len, OSMatch *match);
 int OSMatch_Execute_strncmp(const char *subject, size_t len, OSMatch *match);
@@ -22,6 +23,7 @@ int OSMatch_Execute_strncasecmp(const char *subject, size_t len, OSMatch *match)
 int OSMatch_Execute_strrcasecmp(const char *subject, size_t len, OSMatch *match);
 int OSMatch_Execute_strcasecmp(const char *subject, size_t len, OSMatch *match);
 int OSMatch_CouldBeOptimized(const char *pattern2check);
+*/
 
 /* Compile a pattern to be used later
  * Allowed flags are:
