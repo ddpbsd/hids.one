@@ -63,7 +63,10 @@ static void help_logtest(void)
 
 int main(int argc, char **argv)
 {
+#ifdef LIBGEOIP_ENABLED
     extern MMDB_s geoipdb;
+#endif
+
     int test_config = 0;
     int c = 0;
     char *ut_str = NULL;
