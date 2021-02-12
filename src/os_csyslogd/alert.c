@@ -14,6 +14,7 @@
 #include "config/config.h"
 #include "os_net/os_net.h"
 
+static char *cefescape(const char *msg, const bool header);
 
 /* Escape CEF messages according to the standards */
 char *cefescape(const char *msg, const bool header)
