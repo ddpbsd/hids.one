@@ -199,4 +199,23 @@ int OSMatch_Execute_strrcasecmp(const char *subject, size_t len, OSMatch *match)
 int OSMatch_Execute_strcasecmp(const char *subject, size_t len, OSMatch *match);
 int OSMatch_CouldBeOptimized(const char *pattern2check);
 
+const char *OSPcre2_Execute_pcre2_match(const char *str, OSPcre2 *reg);
+const char *OSPcre2_Execute_strncmp(const char *subject, OSPcre2 *reg);
+const char *OSPcre2_Execute_strrcmp(const char *subject, OSPcre2 *reg);
+const char *OSPcre2_Execute_strcasecmp(const char *subject, OSPcre2 *reg);
+const char *OSPcre2_Execute_strncasecmp(const char *subject, OSPcre2 *reg);
+const char *OSPcre2_Execute_strrcasecmp(const char *subject, OSPcre2 *reg);
+const char *OSPcre2_Execute_strcmp(const char *subject, OSPcre2 *reg);
+int OSPcre2_CouldBeOptimized(const char *pattern);
+
+const char *OSRegex_Execute_pcre2_match(const char *str, OSRegex *reg);
+const char *OSRegex_Execute_strncmp(const char *subject, OSRegex *reg);
+const char *OSRegex_Execute_strrcmp(const char *subject, OSRegex *reg);
+const char *OSRegex_Execute_strcasecmp(const char *subject, OSRegex *reg);
+const char *OSRegex_Execute_strncasecmp(const char *subject, OSRegex *reg);
+const char *OSRegex_Execute_strrcasecmp(const char *subject, OSRegex *reg);
+const char *OSRegex_Execute_strcmp(const char *subject, OSRegex *reg);
+int OSRegex_CouldBeOptimized(const char *pattern2check);
+
+
 #endif /* __OS_REGEX_H */

@@ -13,6 +13,7 @@
 
 #include "os_regex.h"
 
+/*
 const char *OSRegex_Execute_pcre2_match(const char *str, OSRegex *reg);
 const char *OSRegex_Execute_strncmp(const char *subject, OSRegex *reg);
 const char *OSRegex_Execute_strrcmp(const char *subject, OSRegex *reg);
@@ -21,6 +22,7 @@ const char *OSRegex_Execute_strncasecmp(const char *subject, OSRegex *reg);
 const char *OSRegex_Execute_strrcasecmp(const char *subject, OSRegex *reg);
 const char *OSRegex_Execute_strcmp(const char *subject, OSRegex *reg);
 int OSRegex_CouldBeOptimized(const char *pattern2check);
+*/
 
 /* Compile a regular expression to be used later
  * Allowed flags are:

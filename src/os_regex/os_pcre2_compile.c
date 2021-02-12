@@ -14,6 +14,7 @@
 
 #include "os_regex.h"
 
+/*
 const char *OSPcre2_Execute_pcre2_match(const char *str, OSPcre2 *reg);
 const char *OSPcre2_Execute_strncmp(const char *subject, OSPcre2 *reg);
 const char *OSPcre2_Execute_strrcmp(const char *subject, OSPcre2 *reg);
@@ -22,6 +23,7 @@ const char *OSPcre2_Execute_strncasecmp(const char *subject, OSPcre2 *reg);
 const char *OSPcre2_Execute_strrcasecmp(const char *subject, OSPcre2 *reg);
 const char *OSPcre2_Execute_strcmp(const char *subject, OSPcre2 *reg);
 int OSPcre2_CouldBeOptimized(const char *pattern);
+*/
 
 int OSPcre2_Compile(const char *pattern, OSPcre2 *reg, int flags)
 {
