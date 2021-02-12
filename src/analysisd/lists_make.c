@@ -17,7 +17,6 @@
 #include <errno.h>
 #include "lists_make.h"
 
-
 void Lists_OP_MakeAll(int force)
 {
     ListNode *lnode = OS_GetFirstList();

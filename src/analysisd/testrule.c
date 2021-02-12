@@ -28,11 +28,12 @@
 #include "fts.h"
 #include "cleanevent.h"
 
+#ifdef LIBGEOIP_ENABLED
+#include <maxminddb.h>
+#endif
+
 /** Internal Functions **/
 void OS_ReadMSG(char *ut_str);
-#ifdef LIBGEOIP_ENABLED
-    MMDB_s geoipdb;
-#endif
 
 /* Analysisd function */
 RuleInfo *OS_CheckIfRuleMatch(Eventinfo *lf, RuleNode *curr_node);
@@ -62,6 +63,7 @@ static void help_logtest(void)
 
 int main(int argc, char **argv)
 {
+    extern MMDB_s geoipdb;
     int test_config = 0;
     int c = 0;
     char *ut_str = NULL;
