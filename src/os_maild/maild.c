@@ -23,8 +23,6 @@ unsigned int mail_timeout;
 unsigned int   _g_subject_level;
 char _g_subject[SUBJECT_SIZE + 2];
 
-static int errcnt = 0;
-
 /* Prototypes */
 static void help_maild(void) __attribute__((noreturn));
 
