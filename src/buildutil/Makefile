@@ -1,5 +1,5 @@
 include ./Makefile.inc
-
+	
 EXTERNAL_JSON=external/cJSON/
 EXTERNAL_LUA=external/lua-5.2.3/
 EXTERNAL_ZLIB=external/zlib-1.2.11/
@@ -20,11 +20,11 @@ OSSEC_USER?=ossec
 OSSEC_USER_MAIL?=ossecm
 OSSEC_USER_REM?=ossecr
 H1_DEBUG?=yes
-
+	
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
 INSTALL_RESOLVCONF?=yes
-
+	
 USE_PRELUDE?=no
 USE_ZEROMQ?=no
 USE_GEOIP?=no
@@ -32,15 +32,15 @@ USE_INOTIFY?=no
 USE_PCRE2_JIT?=yes
 USE_SYSTEMD?=yes
 USE_SQLITE?=yes
-
+	
 CC?=cc
 MAKE?=make
-
+	
 CFLAGS+=${OSSEC_CFLAGS}
-
+	
 all:
 	@echo "TEST"
-
+	
 settings:
 	@echo
 	@echo "General settings:"
@@ -81,7 +81,7 @@ settings:
 	@echo "    LDFLAGS	 ${OSSEC_LDFLAGS}"
 	@echo "    CC	      ${CC}"
 	@echo "    MAKE	    ${MAKE}"
-
+	
 shared:
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/agent_op.o ../shared/agent_op.c
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/custom_output_search_replace.o ../shared/custom_output_search_replace.c
@@ -108,25 +108,45 @@ shared:
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/string_op.o ../shared/string_op.c
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/validate_op.o ../shared/validate_op.c
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/wait_op.o ../shared/wait_op.c
-
+	
 osnet:
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_net/os_net.o ../os_net/os_net.c
-
+	
 osxml:
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml.o ../os_xml/os_xml.c
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_access.o ../os_xml/os_xml_access.c
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_node_access.o ../os_xml/os_xml_node_access.c
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_variables.o ../os_xml/os_xml_variables.c
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_xml/os_xml_writer.o ../os_xml/os_xml_writer.c
-
+	
 osconfig:
 	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../config/active-response.o ../config/active-response.c
-
+	
 osregex:
 	echo "TEST"
-
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_converter.o ../os_regex/os_converter.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_match.o ../os_regex/os_match.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_match_compile.o ../os_regex/os_match_compile.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_match_execute.o ../os_regex/os_match_execute.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_match_free_pattern.o ../os_regex/os_match_free_pattern.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_pcre2.o ../os_regex/os_pcre2.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_pcre2_compile.o ../os_regex/os_pcre2_compile.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_pcre2_execute.o ../os_regex/os_pcre2_execute.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_pcre2_free_pattern.o ../os_regex/os_pcre2_free_pattern.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_pcre2_free_substrings.o ../os_regex/os_pcre2_free_substrings.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex.o ../os_regex/os_regex.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_compile.o ../os_regex/os_regex_compile.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_execute.o ../os_regex/os_regex_execute.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_free_pattern.o ../os_regex/os_regex_free_pattern.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_free_substrings.o ../os_regex/os_regex_free_substrings.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_maps.o ../os_regex/os_regex_maps.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_match.o ../os_regex/os_regex_match.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_startswith.o ../os_regex/os_regex_startswith.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_str.o ../os_regex/os_regex_str.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} -I../ -I../headers -c -o ../os_regex/os_regex_strbreak.o ../os_regex/os_regex_strbreak.c
+	
 analysisd:
 	echo "TEST"
-
+	
 clean:
 	rm -f Makefile.inc ../shared/*.o ../os_net/*.o ../os_config/*.o ../os_xml/*.o ../os_regex/*.o ../analysisd/*.o
