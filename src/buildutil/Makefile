@@ -20,6 +20,11 @@ OSSEC_USER?=ossec
 OSSEC_USER_MAIL?=ossecm
 OSSEC_USER_REM?=ossecr
 H1_DEBUG?=yes
+
+JSON_FLAGS+=-I../external/cJSON
+ANALYSISD_FLAGS+="-DARGV0=\"ossec-analysisd\""
+ANALYSISD_FLAGS+= -I../analysisd -pthread
+
 	
 INSTALL_CMD?=install -m $(1) -o $(2) -g $(3)
 INSTALL_LOCALTIME?=yes
@@ -81,7 +86,14 @@ settings:
 	@echo "    LDFLAGS	 ${OSSEC_LDFLAGS}"
 	@echo "    CC	      ${CC}"
 	@echo "    MAKE	    ${MAKE}"
-	
+
+clean:
+	rm -f Makefile.inc ../shared/*.o ../os_net/*.o ../os_config/*.o ../os_xml/*.o ../os_regex/*.o ../analysisd/*.o ../analysisd/alerts/*.o ../analysisd/cdb/*.o ../analysisd/compiled_rules/*.o ../analysisd/decoders/*.o ../analysisd/format/*.o ../analysisd/output/*.o ../config/*.o
+
+testbuild:
+	make clean
+	./build.sh
+	make shared osnet osxml osregex osconfig analysisd
 shared:
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/agent_op.o ../shared/agent_op.c
 	${CC} ${CFLAGS} -I../ -I../headers -c -o ../shared/custom_output_search_replace.o ../shared/custom_output_search_replace.c
@@ -147,6 +159,42 @@ osregex:
 	
 analysisd:
 	echo "TEST"
-	
-clean:
-	rm -f Makefile.inc ../shared/*.o ../os_net/*.o ../os_config/*.o ../os_xml/*.o ../os_regex/*.o ../analysisd/*.o
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/accumulator.o ../analysisd/accumulator.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/active-response.o ../analysisd/active-response.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/analysisd.o ../analysisd/analysisd.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cleanevent.o ../analysisd/cleanevent.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/config.o ../analysisd/config.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/dodiff.o ../analysisd/dodiff.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/eventinfo.o ../analysisd/eventinfo.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/eventinfo_list.o ../analysisd/eventinfo_list.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/fts.o ../analysisd/fts.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/lists.o ../analysisd/lists.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/lists_list.o ../analysisd/lists_list.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/lists_make.o ../analysisd/lists_make.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/makelists.o ../analysisd/makelists.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/os_geoip.o ../analysisd/os_geoip.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/rules.o ../analysisd/rules.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/rules_list.o ../analysisd/rules_list.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/stats.o ../analysisd/stats.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -DTESTRULE -I../ -I../headers -c -o ../analysisd/testrule.o ../analysisd/testrule.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/alerts/exec.o ../analysisd/alerts/exec.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/alerts/getloglocation.o ../analysisd/alerts/getloglocation.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/alerts/log.o ../analysisd/alerts/log.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cdb/cdb.o ../analysisd/cdb/cdb.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cdb/cdb_hash.o ../analysisd/cdb/cdb_hash.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cdb/cdb_make.o ../analysisd/cdb/cdb_make.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cdb/uint32_pack.o ../analysisd/cdb/uint32_pack.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/cdb/uint32_unpack.o ../analysisd/cdb/uint32_unpack.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/decode-xml.o ../analysisd/decoders/decode-xml.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/decoder.o ../analysisd/decoders/decoder.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/decoders_list.o ../analysisd/decoders/decoders_list.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/geoip.o ../analysisd/decoders/geoip.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/hostinfo.o ../analysisd/decoders/hostinfo.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/plugin_decoders.o ../analysisd/decoders/plugin_decoders.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/rootcheck.o ../analysisd/decoders/rootcheck.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} -I../ -I../headers -c -o ../analysisd/decoders/syscheck.o ../analysisd/decoders/syscheck.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} ${JSON_FLAGS} -I../ -I../headers -c -o ../analysisd/format/json_extended.o ../analysisd/format/json_extended.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} ${JSON_FLAGS} -I../ -I../headers -c -o ../analysisd/format/to_json.o ../analysisd/format/to_json.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} ${JSON_FLAGS} -I../ -I../headers -c -o ../analysisd/output/jsonout.o ../analysisd/output/jsonout.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} ${JSON_FLAGS} -I../ -I../headers -c -o ../analysisd/output/prelude.o ../analysisd/output/prelude.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${PCRE2_INCLUDES} ${ANALYSISD_FLAGS} ${JSON_FLAGS} -I../ -I../headers -c -o ../analysisd/output/zeromq.o ../analysisd/output/zeromq.c
